@@ -1,0 +1,308 @@
+CREATE TABLE `pedido` (
+   `id` int(11) NOT NULL,
+   `numero` int(11) DEFAULT NULL,
+   `numero_ecommerce` varchar(100) DEFAULT NULL,
+   `data_pedido` datetime DEFAULT NULL,
+   `data_faturamento` datetime DEFAULT NULL,
+   `data_entrega` datetime DEFAULT NULL,
+   `condicao_pagamento` varchar(250) DEFAULT NULL,
+   `meio_pagamento` varchar(250) DEFAULT NULL,
+   `marcador` varchar(250) DEFAULT NULL,
+   `valor_desconto` double DEFAULT NULL,
+   `total_produtos` double DEFAULT NULL,
+   `total_pedido` double DEFAULT NULL,
+   `numero_ordem_compra` varchar(45) DEFAULT NULL,
+   `obs` text,
+   `obs_interna` text,
+   `Naturezaoperacao_id` int(11) DEFAULT NULL,
+   `Formarecebimento_id` int(11) NOT NULL,
+   `Vendedor_id` int(11) NOT NULL,
+   `Cliente_id` int(11) NOT NULL,
+   `Empresa_id` int(11) NOT NULL,
+   `Situacaopedido_id` int(11) NOT NULL,
+   `conferido` char(1) DEFAULT NULL,
+   `data_conferencia` datetime DEFAULT NULL,
+   `conferente` varchar(50) DEFAULT NULL,
+   `volumes` int(11) DEFAULT NULL,
+   `notafiscalid` int(11) DEFAULT NULL,
+   `nfe_finalidade` char(1) DEFAULT NULL COMMENT 'Código	Situação\n1	NF-e normal\n2	NF-e complementar\n3	NF-e de ajuste\n4	Devolução / Retorno\n7	NFe com cupom referenciado / Devolução/Retorno (cupom fiscal)\n8	Devolução/Retorno (sem NFe)\n9	NFe com chave de acesso referenciada',
+   `nfe_serie` int(11) DEFAULT NULL,
+   `nfe_numero` int(11) DEFAULT NULL,
+   `nfe_dataemissao` datetime DEFAULT NULL,
+   `base_icms` double DEFAULT NULL,
+   `valor_icms` double DEFAULT NULL,
+   `base_icms_st` double DEFAULT NULL,
+   `valor_icms_st` double DEFAULT NULL,
+   `valor_faturado` double DEFAULT NULL,
+   `peso_bruto` double DEFAULT NULL,
+   `chave_acesso` varchar(100) DEFAULT NULL,
+   `nfe_situacao` char(1) DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `fk_Pedido_Forma_Pagamento1_idx` (`Formarecebimento_id`),
+   KEY `fk_Pedido_Vendedor1_idx` (`Vendedor_id`),
+   KEY `fk_Pedido_Cliente1_idx` (`Cliente_id`),
+   KEY `fk_Pedido_Empresa1_idx` (`Empresa_id`),
+   KEY `index_data` (`data_pedido` DESC),
+   KEY `fk_Pedido_situacao_pedido_idx` (`Situacaopedido_id`),
+   KEY `fk_naturezaoperacao_pedido_idx` (`Naturezaoperacao_id`),
+   CONSTRAINT `fk_Pedido_Cliente1` FOREIGN KEY (`Cliente_id`) REFERENCES `cliente` (`id`),
+   CONSTRAINT `fk_Pedido_Empresa1` FOREIGN KEY (`Empresa_id`) REFERENCES `empresa` (`id`),
+   CONSTRAINT `fk_Pedido_Forma_Recebimento` FOREIGN KEY (`Formarecebimento_id`) REFERENCES `formarecebimento` (`id`),
+   CONSTRAINT `fk_Pedido_Vendedor1` FOREIGN KEY (`Vendedor_id`) REFERENCES `vendedor` (`id`),
+   CONSTRAINT `fk_Pedido_situacao_pedido` FOREIGN KEY (`Situacaopedido_id`) REFERENCES `situacaopedido` (`id`),
+   CONSTRAINT `fk_naturezaoperacao_pedido` FOREIGN KEY (`Naturezaoperacao_id`) REFERENCES `naturezaoperacao` (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+CREATE TABLE `itempedido` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `quantidade` int(11) DEFAULT NULL,
+   `valorunitario` double DEFAULT NULL,
+   `Pedido_id` int(11) NOT NULL,
+   `Produto_id` int(11) NOT NULL,
+   `Conferido` char(1) DEFAULT NULL,
+   `ncm` varchar(10) DEFAULT NULL,
+   `cfop` varchar(4) DEFAULT NULL,
+   `devolucao` int(11) DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `fk_Item_Pedido_Pedido1_idx` (`Pedido_id`),
+   KEY `fk_Item_Produto_idx` (`Produto_id`),
+   CONSTRAINT `fk_Item_Pedido_Pedido1` FOREIGN KEY (`Pedido_id`) REFERENCES `pedido` (`id`),
+   CONSTRAINT `fk_Item_Produto` FOREIGN KEY (`Produto_id`) REFERENCES `produto` (`id`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=2495448 DEFAULT CHARSET=utf8
+
+CREATE TABLE `vendedor` (
+   `id` int(11) NOT NULL,
+   `nome` varchar(150) DEFAULT NULL,
+   `codigo` varchar(45) DEFAULT NULL,
+   `fantasia` varchar(150) DEFAULT NULL,
+   `tipo_pessoa` char(1) DEFAULT NULL,
+   `cpf_cnpj` varchar(18) DEFAULT NULL,
+   `telefone` varchar(45) DEFAULT NULL,
+   `email` varchar(150) DEFAULT NULL,
+   `endereco` varchar(45) DEFAULT NULL,
+   `numero` varchar(45) DEFAULT NULL,
+   `complemento` varchar(45) DEFAULT NULL,
+   `bairro` varchar(45) DEFAULT NULL,
+   `cep` varchar(45) DEFAULT NULL,
+   `cidade` varchar(45) DEFAULT NULL,
+   `uf` varchar(45) DEFAULT NULL,
+   `situacao` char(1) DEFAULT NULL,
+   `data_criacao` datetime DEFAULT NULL,
+   `data_alteracao` datetime DEFAULT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+CREATE TABLE `cliente` (
+   `id` int(11) NOT NULL,
+   `situacao` char(1) DEFAULT NULL,
+   `codigo` int(11) DEFAULT NULL,
+   `nome` varchar(150) DEFAULT NULL,
+   `fantasia` varchar(150) DEFAULT NULL,
+   `tipo_pessoa` char(1) DEFAULT NULL,
+   `cpf_cnpj` varchar(18) NOT NULL,
+   `ie` varchar(18) DEFAULT NULL,
+   `endereco` varchar(150) DEFAULT NULL,
+   `numero` varchar(10) DEFAULT NULL,
+   `complemento` varchar(50) DEFAULT NULL,
+   `bairro` varchar(30) DEFAULT NULL,
+   `cep` varchar(10) DEFAULT NULL,
+   `contatos` varchar(100) DEFAULT NULL,
+   `fone` varchar(40) DEFAULT NULL,
+   `celular` varchar(40) DEFAULT NULL,
+   `email` varchar(250) DEFAULT NULL,
+   `email_nfe` varchar(250) DEFAULT NULL,
+   `crt` char(1) DEFAULT NULL,
+   `limite_credito` double DEFAULT NULL,
+   `obs` varchar(200) DEFAULT NULL,
+   `data_criacao` datetime DEFAULT NULL,
+   `data_atualizacao` datetime DEFAULT NULL,
+   `Vendedor_id` int(11) NOT NULL,
+   `Cidade_id` int(11) NOT NULL,
+   `Rota_id` int(11) NOT NULL,
+   `agropecuaria` char(1) DEFAULT NULL,
+   `clinica` char(1) DEFAULT NULL,
+   `vet_domicilio` char(1) DEFAULT NULL,
+   `lojapet` char(1) DEFAULT NULL,
+   `criador` char(1) DEFAULT NULL,
+   `banhotosa` char(1) DEFAULT NULL,
+   `hospital` char(1) DEFAULT NULL,
+   `clinica_internacao` char(1) DEFAULT NULL,
+   `parceiro_fiel` char(1) DEFAULT NULL,
+   `loja_referencia` char(1) DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `cpf_cnpj_UNIQUE` (`cpf_cnpj`),
+   KEY `fk_Cliente_Vendedor_idx` (`Vendedor_id`),
+   KEY `fk_Cliente_CIdade_idx` (`Cidade_id`),
+   KEY `fk_Cliente_rota_idx` (`Rota_id`),
+   CONSTRAINT `fk_Cliente_CIdade` FOREIGN KEY (`Cidade_id`) REFERENCES `cidade` (`id`),
+   CONSTRAINT `fk_Cliente_Vendedor` FOREIGN KEY (`Vendedor_id`) REFERENCES `vendedor` (`id`),
+   CONSTRAINT `fk_Cliente_rota` FOREIGN KEY (`Rota_id`) REFERENCES `rota` (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+CREATE TABLE `fornecedor` (
+   `id` int(11) NOT NULL,
+   `situacao` char(1) NOT NULL,
+   `codigo` int(11) DEFAULT NULL,
+   `nome` varchar(150) DEFAULT NULL,
+   `fantasia` varchar(150) DEFAULT NULL,
+   `tipo_pessoa` char(1) DEFAULT NULL,
+   `cpf_cnpj` varchar(18) DEFAULT NULL,
+   `ie` varchar(18) DEFAULT NULL,
+   `endereco` varchar(150) DEFAULT NULL,
+   `numero` varchar(10) DEFAULT NULL,
+   `complemento` varchar(50) DEFAULT NULL,
+   `bairro` varchar(30) DEFAULT NULL,
+   `cep` varchar(10) DEFAULT NULL,
+   `contatos` varchar(100) DEFAULT NULL,
+   `fone` varchar(40) DEFAULT NULL,
+   `celular` varchar(40) DEFAULT NULL,
+   `email` varchar(50) DEFAULT NULL,
+   `crt` char(1) DEFAULT NULL,
+   `obs` varchar(200) DEFAULT NULL,
+   `data_criacao` datetime DEFAULT NULL,
+   `data_atualizacao` datetime DEFAULT NULL,
+   `Cidade_id` int(11) NOT NULL,
+   `cor_catalogo` varchar(45) DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `fk_fornecedor_cidade_idx` (`Cidade_id`),
+   CONSTRAINT `fk_fornecedor_cidade` FOREIGN KEY (`Cidade_id`) REFERENCES `cidade` (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+
+CREATE TABLE `categoria` (
+   `id` int(11) NOT NULL,
+   `nome` varchar(100) DEFAULT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+ CREATE TABLE `cidade` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `nome` varchar(245) DEFAULT NULL,
+   `cep` int(11) DEFAULT NULL,
+   `cmunfg` int(11) DEFAULT NULL,
+   `Estado_id` int(11) NOT NULL,
+   PRIMARY KEY (`id`),
+   KEY `fk_Cidade_Estado_idx` (`Estado_id`),
+   CONSTRAINT `fk_Cidade_Estado` FOREIGN KEY (`Estado_id`) REFERENCES `estado` (`id`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=10271 DEFAULT CHARSET=latin1
+
+
+ CREATE TABLE `devolucao` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `pedido_id` int(11) NOT NULL,
+   `produto_id` int(11) NOT NULL,
+   `data` datetime NOT NULL,
+   `quantidade` int(11) NOT NULL,
+   `valor` double NOT NULL,
+   `situacao` char(1) COLLATE utf8_bin DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `devolucaopedido_idx` (`pedido_id`),
+   KEY `devolucaoproduto_idx` (`produto_id`),
+   CONSTRAINT `devolucaopedido` FOREIGN KEY (`pedido_id`) REFERENCES `pedido` (`id`),
+   CONSTRAINT `devolucaoproduto` FOREIGN KEY (`produto_id`) REFERENCES `produto` (`id`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+
+  CREATE TABLE `rota` (
+   `id` int(11) NOT NULL,
+   `nome` varchar(100) DEFAULT NULL,
+   `Vendedor_id` int(11) DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `FK_Rota_Vendedor_idx` (`Vendedor_id`),
+   CONSTRAINT `FK_Rota_Vendedor` FOREIGN KEY (`Vendedor_id`) REFERENCES `vendedor` (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+
+ CREATE TABLE `devolucao` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `pedido_id` int(11) NOT NULL,
+   `produto_id` int(11) NOT NULL,
+   `data` datetime NOT NULL,
+   `quantidade` int(11) NOT NULL,
+   `valor` double NOT NULL,
+   `situacao` char(1) COLLATE utf8_bin DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `devolucaopedido_idx` (`pedido_id`),
+   KEY `devolucaoproduto_idx` (`produto_id`),
+   CONSTRAINT `devolucaopedido` FOREIGN KEY (`pedido_id`) REFERENCES `pedido` (`id`),
+   CONSTRAINT `devolucaoproduto` FOREIGN KEY (`produto_id`) REFERENCES `produto` (`id`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+
+ CREATE TABLE `estado` (
+   `id` int(11) NOT NULL,
+   `nome` varchar(145) DEFAULT NULL,
+   `sigla` varchar(2) DEFAULT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+ CREATE TABLE `estado` (
+   `id` int(11) NOT NULL,
+   `nome` varchar(145) DEFAULT NULL,
+   `sigla` varchar(2) DEFAULT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+ CREATE TABLE `familia` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `nome` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+   `fornecedor_id` int(11) DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `fornecedor_idx` (`fornecedor_id`),
+   CONSTRAINT `fornecedor` FOREIGN KEY (`fornecedor_id`) REFERENCES `fornecedor` (`id`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+
+ CREATE TABLE `formarecebimento` (
+   `id` int(11) NOT NULL,
+   `Descricao` varchar(45) DEFAULT NULL,
+   `Codigo` varchar(45) DEFAULT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+
+ 
+ 
+ CREATE TABLE `naturezaoperacao` (
+   `id` int(11) NOT NULL,
+   `descricao` varchar(200) DEFAULT NULL,
+   `id_olist` int(11) NOT NULL,
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `id_olist_UNIQUE` (`id_olist`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+ 
+  CREATE TABLE `pagamento` (
+   `id` int(11) NOT NULL,
+   `data` date DEFAULT NULL,
+   `vencimento` date DEFAULT NULL,
+   `valor` decimal(15,2) DEFAULT NULL,
+   `beneficiario` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+   `cnpj` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+   `historico` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+   `categoria` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+   `situacao` char(1) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+   `liquidacao` date DEFAULT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+
+ 
+ CREATE TABLE `situacaopedido` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `descricao` varchar(45) DEFAULT NULL,
+   `codigo` varchar(45) DEFAULT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8
+
+ 
+
+ CREATE TABLE `vendedorrota` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `Vendedor_id` int(11) NOT NULL DEFAULT '0',
+   `Rota_id` int(11) NOT NULL DEFAULT '0',
+   `datainicio` datetime DEFAULT '0000-00-00 00:00:00',
+   `datatermino` datetime DEFAULT '0000-00-00 00:00:00',
+   `enviado` char(1) DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `FK_vendedorrota_1` (`Vendedor_id`),
+   KEY `FK_vendedorrota_2` (`Rota_id`),
+   CONSTRAINT `FK_vendedorrota_1` FOREIGN KEY (`Vendedor_id`) REFERENCES `vendedor` (`id`),
+   CONSTRAINT `FK_vendedorrota_2` FOREIGN KEY (`Rota_id`) REFERENCES `rota` (`id`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=215 DEFAULT CHARSET=latin1

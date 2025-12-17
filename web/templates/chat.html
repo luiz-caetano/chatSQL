@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Chat Casa Vet{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Chat SQL - Casa Vet</h2>
+
+    <!-- Caixa de chat -->
+    <div id="chat-box" class="border rounded p-3 mb-3" style="height:400px; overflow-y:auto; background-color:#f8f9fa;">
+        <!-- Mensagens do chat aparecem aqui -->
+    </div>
+
+    <!-- Loading / Pensando -->
+    <div id="loading" class="alert alert-info" style="display:none;">
+        <i class="fa fa-spinner fa-spin"></i> CasaVet está processando sua pergunta...
+    </div>
+
+    <!-- Input -->
+    <div class="input-group">
+        <input type="text" id="user-input" class="form-control" placeholder="Digite sua pergunta SQL..." />
+        <div class="input-group-append">
+            <button class="btn btn-primary" id="send-btn">Enviar</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    const sendBtn = document.getElementById("send-btn");
+    const inputBox = document.getElementById("user-input");
+    const chatBox = document.getElementById("chat-box");
+    const loading = document.getElementById("loading");
+
+    sendBtn.addEventListener("click", sendMessage);
+    inputBox.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") sendMessage();
+    });
+
+    function sendMessage() {
+        const message = inputBox.value.trim();
+        if (!message) return;
+
+        appendMessage("Você", message);
+        inputBox.value = "";
+
+        // Mostrar feedback de loading
+        loading.style.display = "block";
+
+        fetch("/ask", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: message })
+        })
+            .then(res => res.json())
+            .then(data => {
+                // Ocultar loading quando a resposta chegar
+                loading.style.display = "none";
+                appendMessage("CasaVet", data.response);
+            })
+            .catch(err => {
+                loading.style.display = "none";
+                appendMessage("CasaVet", "Erro ao conectar com o chat.");
+                console.error(err);
+            });
+    }
+
+    function appendMessage(sender, text) {
+        const msgDiv = document.createElement("div");
+        msgDiv.classList.add("mb-2");
+        msgDiv.innerHTML = `<strong>${sender}:</strong> <pre style="display:inline">${text}</pre>`;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+{% endblock %}

@@ -1,236 +1,126 @@
+Para humanizar o seu README, o segredo é focar menos em "especificações técnicas frias" e mais nos **benefícios**, na **facilidade de uso** e em uma linguagem que conecte com quem está lendo.
+
+Aqui está a versão aprimorada, com uma estrutura mais moderna, emojis estratégicos e o espaço reservado para o seu GIF:
 
 ---
 
-# 🧠 Chat SQL com LLM, Prompt Customizado e Schema Codificado
+# 🧠 Talk2Data: Chat SQL Inteligente
 
 <div align="center">
 
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge\&logo=python)
-![Flask](https://img.shields.io/badge/Flask-Web%20Framework-lightgrey?style=for-the-badge\&logo=flask)
-![LangChain](https://img.shields.io/badge/LangChain-Orchestration-green?style=for-the-badge)
-![MySQL](https://img.shields.io/badge/MySQL-Database-orange?style=for-the-badge\&logo=mysql)
-![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)
+**Dê voz aos seus dados. Uma IA que entende suas perguntas, escreve o SQL por você e entrega o resultado na hora.**
 
-**IA que entende linguagem natural, gera SQL seguro e executa consultas reais usando LangChain e prompt totalmente controlado.**
-
-[Sobre](#-sobre-o-projeto) • [Arquitetura](#-arquitetura-e-conceitos) • [Funcionalidades](#-funcionalidades) • [Tech Stack](#-tech-stack) • [Instalação](#-instalação) • [Exemplo](#-exemplo-de-uso)
+[Sobre](https://www.google.com/search?q=%23-sobre-o-projeto) • [Como funciona](https://www.google.com/search?q=%23-como-funciona) • [Instalação](https://www.google.com/search?q=%23-instala%C3%A7%C3%A3o) • [Segurança](https://www.google.com/search?q=%23-seguran%C3%A7a-em-primeiro-lugar) • [Autor](https://www.google.com/search?q=%23-autor)
 
 </div>
 
 ---
 
-## 🧩 Sobre o Projeto
+## 📸 Demonstração
+
+Aqui está o sistema em ação: converter uma pergunta simples em um relatório complexo em segundos.
+
+<div align="center">
+<img src="https://s5.ezgif.com/tmp/ezgif-5afbb176139121ee.gif" alt="Demonstração do Chat SQL" width="800">
+</div>
+
+---
+
+## 🧩 O "Pulo do Gato" deste projeto
 
 ### O Problema
 
-Usuários de negócio precisam de dados **rápidos e específicos**, mas dependem constantemente do time técnico para escrever queries SQL. Dashboards fixos não resolvem perguntas dinâmicas.
+Sabe aquele relatório que o gestor precisa "para ontem", mas o time de TI está sobrecarregado? O gargalo não é o dado, é a **ponte** entre a pergunta (linguagem humana) e a resposta (SQL).
 
 ### A Solução
 
-Este projeto implementa um **chat inteligente** que:
-
-* Converte **linguagem natural → SQL**
-* Usa **prompt customizado e controlado**
-* Executa queries reais no banco
-* Retorna dados estruturados em tempo real
-
-Tudo isso garantindo **contexto correto do schema**, **controle da IA** e **prevenção de erros comuns**.
+O **Talk2Data** elimina esse atrito. Ele permite que qualquer pessoa, mesmo sem saber uma linha de código, consulte o banco de dados usando linguagem natural. É como ter um analista de dados disponível 24/7.
 
 ---
 
-## 🧠 Arquitetura e Conceitos
+## 🧠 Como a mágica acontece?
 
-### 🔐 Schema do Banco em Base64
+Diferente de bots genéricos, este projeto utiliza uma arquitetura pensada para **precisão e segurança**:
 
-O schema do banco (**CREATE TABLE**) é fornecido ao LLM **codificado em Base64**.
-
-**Por quê?**
-
-* Evita quebra de linhas e erros de parsing
-* Garante consistência no prompt
-* Facilita versionamento e transporte via `.env`
-* Reduz risco de o modelo “inventar” colunas
-
-> O schema é decodificado em runtime e injetado no prompt como contexto fixo.
+* **Schema Blindado (Base64):** O desenho do seu banco de dados é injetado no cérebro da IA de forma codificada. Isso garante que ela nunca "esqueça" a estrutura ou invente colunas que não existem.
+* **Prompt de Especialista:** O modelo não apenas "chuta" um código. Ele segue regras rígidas de negócio, usa apelidos (aliases) padronizados e conhece os IDs dos seus principais vendedores e fornecedores.
+* **Orquestração com LangChain:** Utilizamos o LangChain para garantir que o fluxo (Pergunta -> SQL -> Execução -> Resposta) seja fluido e confiável.
 
 ---
 
-### ✍️ Prompt Customizado (Core do Projeto)
+## ✨ O que ele faz?
 
-O comportamento do LLM **não é genérico**.
-
-O prompt foi projetado para:
-
-* Restringir a IA **somente ao schema fornecido**
-* Impedir `DELETE`, `DROP`, `UPDATE`
-* Forçar retorno **apenas em SQL válido**
-* Padronizar aliases, filtros e joins
-
-Exemplo de instrução interna:
-
-```text
-Você é um assistente especializado em SQL.
-Use apenas as tabelas e colunas fornecidas.
-Nunca invente campos.
-Nunca execute comandos destrutivos.
-Retorne apenas a query SQL final.
-```
-
-Isso torna o sistema:
-
-* Mais **seguro**
-* Mais **previsível**
-* Muito mais **confiável para produção**
+* ✅ **Traduz "Humanês" para SQL:** Entende perguntas complexas.
+* ✅ **Execução em Tempo Real:** Conecta no MySQL e traz dados reais.
+* ✅ **Segurança Nativa:** Bloqueia comandos perigosos como `DROP` ou `DELETE`.
+* ✅ **Contexto de Negócio:** Sabe quem são seus top fornecedores e clientes pelo nome.
 
 ---
 
-### 🦜🔗 LangChain como Orquestrador
+## 🛠️ Tech Stack
 
-O LangChain é usado para:
-
-* Gerenciar **cadeia de prompts**
-* Separar contexto (schema) da pergunta do usuário
-* Facilitar troca de modelos (Ollama, OpenAI, etc.)
-* Garantir consistência na geração de SQL
-
-O fluxo é:
-
-1. Pergunta do usuário
-2. Prompt base + schema decodificado
-3. LLM gera SQL
-4. SQL é validado
-5. Query executada no banco
-6. Resultado retornado ao frontend
+* **Coração:** Python 3.8+
+* **Cérebro:** LangChain + LLM (Ollama/OpenAI)
+* **Corpo (Interface):** Flask + Bootstrap
+* **Memória:** MySQL
 
 ---
 
-## ✨ Funcionalidades
+## 🚀 Começando agora
 
-✔ Conversão de linguagem natural em SQL
-✔ Prompt totalmente controlado
-✔ Schema fixo e seguro (Base64)
-✔ Execução real no banco MySQL
-✔ Retorno dos dados + query gerada
-✔ Interface web simples e responsiva
-
----
-
-## 🧪 Tech Stack
-
-| Camada   | Tecnologia         | Função                        |
-| -------- | ------------------ | ----------------------------- |
-| Backend  | Python + Flask     | API e controle da aplicação   |
-| IA       | LangChain + LLM    | Orquestração e geração de SQL |
-| Database | MySQL              | Fonte de dados                |
-| Frontend | Bootstrap + Jinja2 | Interface web                 |
-
----
-
-## 🚀 Instalação e Configuração
-
-### Pré-requisitos
-
-* Python 3.8+
-* MySQL rodando
-* Ollama ou outro LLM compatível
-
-### Passos
-
-1. **Clone o repositório**
+### 1. Preparando o terreno
 
 ```bash
 git clone https://github.com/seu-usuario/seu-repo.git
 cd seu-repo
-```
-
-2. **Instale dependências**
-
-```bash
 pip install -r requirements.txt
+
 ```
 
-3. **Configure o `.env`**
+### 2. Configurando sua bússola
+
+Crie um arquivo `.env` na raiz:
 
 ```ini
 DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
+DB_USER=seu_usuario
 DB_PASSWORD=sua_senha
 DB_NAME=seu_banco
 
-# Schema do banco codificado em Base64
-SCHEMA_BASE64=Q1JFQVRFIFRBQkxFIHZlbmRhcyAoLi4uKTs=
+# Transforme seu CREATE TABLE em base64 e cole aqui
+SCHEMA_BASE64=SUFfQ09ESUZJQ0FEQV9BUVVJ...
+
 ```
 
-> 💡 Dica:
-> `cat schema.sql | base64`
-
-4. **Execute**
+### 3. Decolagem
 
 ```bash
 python main.py
-```
-
-5. **Acesse**
 
 ```
-http://localhost:5000/chat
-```
+
+Acesse: `http://localhost:5000` e comece a conversar com seus dados!
 
 ---
 
-## 🧠 Exemplo de Uso
+## 🛡️ Segurança em Primeiro Lugar
 
-**Usuário:**
+Este projeto foi desenhado para ser um **assistente de consulta**, não um administrador de banco.
 
-> “Quais foram as vendas do produto AVERT em Varginha?”
-
-**SQL Gerado:**
-
-```sql
-SELECT cliente, valor_total
-FROM vendas
-WHERE produto = 'AVERT'
-AND cidade = 'Varginha';
-```
-
-**Resultado:**
-
-```json
-[
-  { "cliente": "Farmácia Central", "valor_total": 1250.00 },
-  { "cliente": "Hospital Vida", "valor_total": 3400.50 }
-]
-```
+1. O prompt proíbe qualquer ação de escrita/deleção.
+2. O schema é fixo, evitando que a IA explore áreas indevidas do servidor.
+3. Recomendamos o uso de um usuário MySQL com permissão apenas de `SELECT`.
 
 ---
 
-## 📁 Estrutura do Projeto
-
-```bash
-.
-├── main.py
-├── requirements.txt
-├── .env
-├── web/
-│   ├── views.py
-│   ├── llm.py        # Prompt + LangChain
-│   ├── templates/
-│   └── static/
-└── README.md
-```
-
----
-
-## 👨‍💻 Autor
+## 👨‍💻 Quem está por trás disso?
 
 **Luiz Caetano**
-*Software Developer | Backend | IA aplicada a dados*
 
-🔹 Python • SQL • LangChain • LLMs
-🔹 Automação e inteligência aplicada a negócios
+> "Transformando dados em diálogos e processos em inteligência."
 
-[LinkedIn](https://www.linkedin.com/in/luiz-caetano)
+Se esse projeto te ajudou, sinta-se à vontade para conectar!
 
 ---
 
+> **Próximos passos:** Gostaria que eu te ajudasse a criar um pequeno script em Python para gerar automaticamente esse código Base64 do seu arquivo `.sql`?

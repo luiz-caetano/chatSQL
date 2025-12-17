@@ -1,6 +1,4 @@
 
----
-
 # Case Técnico: Interface de Linguagem Natural para SQL (Text-to-SQL)
 
 <div align="center">

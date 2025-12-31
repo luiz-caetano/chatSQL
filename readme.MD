@@ -22,7 +22,7 @@
 Para entender o fluxo da solução sem precisar configurar o ambiente:
 
 <div align="center">
-<img src="https://s5.ezgif.com/tmp/ezgif-5ea35097253030e0.gif" alt="GIF do Chat funcionando">
+<img src="gif.gif" alt="GIF do Chat funcionando">
 </div>
 
 ---
